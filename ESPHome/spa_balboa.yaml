@@ -1,0 +1,176 @@
+esphome:
+  name: spa-balboa
+  friendly_name: spa_balboa
+
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+  level: DEBUG
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "xhNokhQNOEOevS1DoRK6ha06pEbd1dzzOCNfeev5gzo="
+
+ota:
+  - platform: esphome
+    password: "dfe02ab1d42a8c3a2556ffa3052e1332"
+
+wifi:
+  ssid: !secret wifi_ext_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Spa-Balboa Fallback Hotspot"
+    password: "4xGNApi1STFl"
+
+captive_portal:
+    
+# Web server utile pour un check rapide
+web_server:
+  port: 80
+
+external_components:
+  - source:
+      type: local
+      path: .
+    components:
+      - balboa_gs
+    refresh: always
+
+balboa_gs:
+  id: spa
+  mode_affichage: mode_affichage
+  temperature_eau : temperature_eau
+  temperature_reglage : temperature_reglage
+  affichage : affichage
+  pompe1_active : pompe1_active
+  pompe2_active : pompe1_active
+  blower_active : blower_active
+  filtration_active : filtration_active
+  filtre1_active : filtre1_active
+  filtre2_active : filtre2_active
+  am_mode : am_mode
+  pm_mode : pm_mode
+  stdMode_actif : stdMode_actif
+  slpMode_actif : slpMode_actif
+  ecnMode_actif : ecnMode_actif
+  iceMode_actif : iceMode_actif
+
+# ============================================================
+#                       CAPTEURS
+# ============================================================
+sensor:
+  - platform: wifi_signal
+    name: "spa-balboa – WiFi RSSI"
+    update_interval: 60s
+  - platform: uptime
+    name: "spa-balboa – Uptime"
+
+  - platform: template
+    id: temperature_eau
+    name: "Température de l’eau"
+    unit_of_measurement: "°C"
+
+  - platform: template
+    id: temperature_reglage
+    name: "Consigne température"
+    unit_of_measurement: "°C"
+
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      name: "spa-balboa  – IP"
+    ssid:
+      name: "spa-balboa  – SSID"
+
+  - platform: template
+    id: affichage
+    name: "Affichage LCD"
+
+  - platform: template
+    id: mode_affichage
+    name: "Mode d’affichage"
+
+  - platform: template
+    id: heure_spa
+    name: "Heure Spa"
+
+
+# ============================================================
+#              BINARY SENSORS (BOOLÉENS)
+# ============================================================
+binary_sensor:
+  - platform: template
+    id: chauffage_active
+    name: "Chauffage"
+
+  - platform: template
+    id: pompe1_active
+    name: "Pompe 1"
+
+  - platform: template
+    id: pompe2_active
+    name: "Pompe 2"
+
+  - platform: template
+    id: blower_active
+    name: "Blower"
+
+  - platform: template
+    id: lumiere_active
+    name: "Lumière"
+
+  - platform: template
+    id: filtration_active
+    name: "Filtration"
+
+  - platform: template
+    id: filtre1_active
+    name: "Filtre 1"
+
+  - platform: template
+    id: filtre2_active
+    name: "Filtre 2"
+
+  - platform: template
+    id: am_mode
+    name: "AM"
+
+  - platform: template
+    id: pm_mode
+    name: "PM"
+
+  - platform: template
+    id: start_actif
+    name: "Start"
+
+  - platform: template
+    id: stop_actif
+    name: "Stop"
+
+  - platform: template
+    id: stdMode_actif
+    name: "Mode - Standard"
+
+  - platform: template
+    id: slpMode_actif
+    name: "Mode - Sleep"  
+
+  - platform: template
+    id: ecnMode_actif
+    name: "Mode - Eco"
+
+  - platform: template
+    id: iceMode_actif
+    name: "Mode - Ice"
+
+button:
+  - platform: restart
+    name: "Restart Spa ESP32"
